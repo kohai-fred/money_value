@@ -1,12 +1,6 @@
 <script setup>
   import { alertStore } from "../store/alert.store";
-
   const { alert } = alertStore();
-  console.log("🚀 ~ file: Alert.vue:5 ~ alert:", alert.value);
-  // const props = defineProps({
-  //   color: String,
-  //   title: String,
-  // });
 </script>
 
 <template>
