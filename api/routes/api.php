@@ -19,3 +19,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('currencies', [CurrencyController::class, 'index'])->name("currencies");
 
 Route::post('login', [AuthController::class, 'authenticate'])->name('login');
+
+Route::prefix('dashboard')->name('dashboard.')->group(function () {
+    Route::resource('currencies', CurrencyController::class);
+});

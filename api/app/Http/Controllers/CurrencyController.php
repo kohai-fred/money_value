@@ -20,7 +20,7 @@ class CurrencyController extends Controller
      */
     public function create()
     {
-        // return new Currencies();
+        return new Currencies();
     }
 
     /**
