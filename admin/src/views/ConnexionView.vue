@@ -32,7 +32,7 @@
             router.push({ name: "dashboard" });
             return;
           }
-          showAlert.value({ color: "success", title: data.message });
+          showAlert.value({ color: "error", title: data.message });
         });
       } catch (error) {
         console.error("Une erreur est survenue", error.message);
