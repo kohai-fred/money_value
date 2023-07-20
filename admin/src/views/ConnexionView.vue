@@ -29,7 +29,7 @@
           const { data } = res;
           if (data.status === 200) {
             setToken.value(res.data.token);
-            router.push({ name: "dashboard" });
+            router.go({ name: "currency" });
             return;
           }
           showAlert.value({ color: "error", title: data.message });

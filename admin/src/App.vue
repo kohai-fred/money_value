@@ -4,8 +4,10 @@
   import { ref } from "vue";
   import { useDisplay } from "vuetify/lib/framework.mjs";
   import Alert from "./components/Alert.vue";
+  import { useMenu } from "./composables/menu";
 
   const { mdAndUp } = useDisplay();
+  const { menuList } = useMenu();
 
   const router = useRouter();
   let isDrawerVisible = ref();
@@ -21,7 +23,13 @@
     <NavBar />
     <v-navigation-drawer v-if="isDrawerVisible" floating :permanent="mdAndUp">
       <v-list>
-        <v-list-item title="Navigation drawer"></v-list-item>
+        <v-list-item
+          v-for="menu in menuList"
+          :key="menu.to"
+          :to="menu.to"
+          :title="menu.name"
+          :prepend-icon="menu.ico"
+        ></v-list-item>
       </v-list>
     </v-navigation-drawer>
 

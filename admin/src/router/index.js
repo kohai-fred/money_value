@@ -3,6 +3,7 @@ import { userStore } from "../store/user.store";
 import HomeView from "../views/HomeView.vue";
 import ConnexionView from "../views/ConnexionView.vue";
 import DashboardView from "../views/dashboard/DashboardView.vue";
+import ExchangeView from "../views/dashboard/ExchangeView.vue";
 
 const { token } = userStore();
 
@@ -21,15 +22,28 @@ const router = createRouter({
     },
     {
       path: "/dashboard",
-      name: "dashboard",
-      component: DashboardView,
       meta: { requiredAuth: true },
+      children: [
+        {
+          path: "currency",
+          name: "currency",
+          component: DashboardView,
+        },
+        {
+          path: "exchange",
+          name: "exchange",
+          component: ExchangeView,
+        },
+      ],
     },
   ],
 });
 
 router.beforeEach((to, from, next) => {
-  if (to.name === "login" && token.value) next({ name: "dashboard" });
+  if (to.name === "login" && token.value) {
+    next({ name: "currency" });
+    return;
+  }
   if (to.meta.requiredAuth && !token.value) {
     next({ name: "login" });
   } else {

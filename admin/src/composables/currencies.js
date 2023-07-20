@@ -1,5 +1,6 @@
 import { ref } from "vue";
 import { fetchAllCurrencies } from "../services/currencies";
+import { userStore } from "../store/user.store";
 
 export function useCurrencies() {
   const currencies = ref(null);
