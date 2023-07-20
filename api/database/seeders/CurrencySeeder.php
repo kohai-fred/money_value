@@ -2,9 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Currencies;
 use App\Models\Currency;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class CurrencySeeder extends Seeder
@@ -16,8 +14,15 @@ class CurrencySeeder extends Seeder
     {
         $currencies = [
             ['name' => 'euro', 'code' => 'EUR'],
-            ['name' => 'dollar', 'code' => 'USD'],
-            ['name' => 'bitcoin', 'code' => 'BTC'],
+            ['name' => 'dollar americain', 'code' => 'USD'],
+            ['name' => 'dollar canadien', 'code' => 'CAD'],
+            ['name' => 'dong', 'code' => 'VND'],
+            ['name' => 'florin', 'code' => 'HUF'],
+            ['name' => 'franc cfa', 'code' => 'XAF'],
+            ['name' => 'yen', 'code' => 'JPY'],
+            ['name' => 'livre sterling', 'code' => 'GBP'],
+            ['name' => 'baht', 'code' => 'THB'],
+            ['name' => 'riel', 'code' => 'KHR'],
         ];
 
         foreach ($currencies as $currency) {

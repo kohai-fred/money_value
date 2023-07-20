@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CurrencyController;
+use App\Http\Controllers\ExchangeController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -22,4 +23,5 @@ Route::post('login', [AuthController::class, 'authenticate'])->name('login');
 
 Route::prefix('dashboard')->middleware('auth:sanctum')->name('dashboard.')->group(function () {
     Route::resource('currencies', CurrencyController::class)->except(['show', 'create', 'edit']);
+    Route::resource('exchanges', ExchangeController::class)->except(['show', 'create', 'edit']);
 });
