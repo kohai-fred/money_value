@@ -10,7 +10,7 @@ class ExchangeController extends Controller
 {
     public function index()
     {
-        return Exchange::all();
+        return Exchange::with('currency1', 'currency2')->get();
     }
 
     public function store(ExchangeFormRequest $request)
@@ -19,7 +19,7 @@ class ExchangeController extends Controller
 
         Exchange::create($data);
 
-        return Exchange::all();
+        return Exchange::with('currency1', 'currency2')->get();
     }
 
     public function update(ExchangeFormRequest $request, Exchange $exchange)
@@ -28,13 +28,13 @@ class ExchangeController extends Controller
 
         $exchange->update($data);
 
-        return Exchange::all();
+        return Exchange::with('currency1', 'currency2')->get();
     }
 
     public function destroy(Exchange $exchange)
     {
         $exchange->delete();
 
-        return Exchange::all();
+        return Exchange::with('currency1', 'currency2')->get();
     }
 }
