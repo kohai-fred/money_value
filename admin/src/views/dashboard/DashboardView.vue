@@ -6,6 +6,7 @@
   import { alertStore } from "../../store/alert.store";
   import { computed } from "vue";
   import Modal from "../../components/Modal.vue";
+  import TitlePage from "../../components/TitlePage.vue";
   const { currencies, isLoading, error } = useCurrencies();
   const { showAlert } = alertStore();
 
@@ -80,11 +81,10 @@
     formCurrency.name = "";
     isIdUpdate.value = null;
   }
-  console.log("🆘 FORM ", formCurrency);
 </script>
 
 <template>
-  <p class="text-h4 text-center text-capitalize my-8">les devises</p>
+  <TitlePage title="Devises" />
 
   <div align-items="center" class="d-flex align-top justify-space-around flex-wrap gap-5 mt-16" width="100%">
     <v-card v-if="currencies" class="mx-3 my-3" max-width="500" min-width="250px" width="100%">
