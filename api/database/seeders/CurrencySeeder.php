@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Currencies;
+use App\Models\Currency;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -20,7 +21,7 @@ class CurrencySeeder extends Seeder
         ];
 
         foreach ($currencies as $currency) {
-            Currencies::create($currency);
+            Currency::create($currency);
         }
     }
 }

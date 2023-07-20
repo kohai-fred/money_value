@@ -21,5 +21,5 @@ Route::get('currencies', [CurrencyController::class, 'index'])->name("currencies
 Route::post('login', [AuthController::class, 'authenticate'])->name('login');
 
 Route::prefix('dashboard')->middleware('auth:sanctum')->name('dashboard.')->group(function () {
-    Route::resource('currencies', CurrencyController::class);
+    Route::resource('currencies', CurrencyController::class)->except(['show', 'create', 'edit']);
 });

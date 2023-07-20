@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Currencies;
+use App\Http\Requests\CurrencyFormRequest;
+use App\Http\Requests\UpdateCurrencyFormRequest;
+use App\Models\Currency;
 use Illuminate\Http\Request;
 
 class CurrencyController extends Controller
@@ -12,54 +14,35 @@ class CurrencyController extends Controller
      */
     public function index()
     {
-        return Currencies::all();
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        return new Currencies();
+        return Currency::all();
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(CurrencyFormRequest $request)
     {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
+        $validatedData = $request->validated();
+        $currency = Currency::create($validatedData);
+        return Currency::all();
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateCurrencyFormRequest $request, Currency $currency)
     {
-        //
+        $validatedData = $request->validated();
+        $currency->update($validatedData);
+        return Currency::all();
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Currency $currency)
     {
-        //
+        $currency->delete();
+        return Currency::all();
     }
 }
