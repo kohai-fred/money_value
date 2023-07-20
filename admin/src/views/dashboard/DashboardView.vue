@@ -40,10 +40,8 @@
           : await updateCurrency(isIdUpdate.value, newFormCurrency);
 
         currencies.value = newCurrencies;
-        formCurrency.name = "";
-        formCurrency.code = "";
+        clearForm();
 
-        isIdUpdate.value = null;
         showAlert.value({
           color: "success",
           title: `La devise ${newFormCurrency.name} à bien été ${isIdUpdate.value ? "modifée" : "ajoutée"}`,
@@ -76,6 +74,13 @@
       showAlert.value({ color: "error", title: "Une erreur est survenue" });
     }
   }
+
+  function clearForm() {
+    formCurrency.code = "";
+    formCurrency.name = "";
+    isIdUpdate.value = null;
+  }
+  console.log("🆘 FORM ", formCurrency);
 </script>
 
 <template>
@@ -166,10 +171,25 @@
           :rules="[rules.required, rules.strict(formCurrency.code, 3), rules.onlyString]"
         />
       </v-form>
-      <v-card-actions class="px-8">
-        <v-btn type="submit" form="currencyForm" block :color="isIdUpdate ? 'primary' : 'teal'" variant="flat">
-          {{ isIdUpdate ? "Modifier" : "Ajouter" }}
-        </v-btn>
+      <v-card-actions class="px-8 mb-2">
+        <v-row>
+          <v-col>
+            <v-btn
+              block
+              @click="clearForm"
+              color="red"
+              :disabled="!formCurrency.code || !formCurrency.name"
+              :variant="!formCurrency.code || !formCurrency.name ? 'text' : 'flat'"
+            >
+              Annuler
+            </v-btn>
+          </v-col>
+          <v-col>
+            <v-btn type="submit" form="currencyForm" block :color="isIdUpdate ? 'primary' : 'teal'" variant="flat">
+              {{ isIdUpdate ? "Modifier" : "Ajouter" }}
+            </v-btn>
+          </v-col>
+        </v-row>
       </v-card-actions>
     </v-card>
   </div>
