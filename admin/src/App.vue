@@ -26,7 +26,7 @@
     </v-navigation-drawer>
 
     <v-main>
-      <div style="margin: 20px; min-height: 100vh">
+      <div style="margin: 20px">
         <Alert />
         <router-view />
       </div>
