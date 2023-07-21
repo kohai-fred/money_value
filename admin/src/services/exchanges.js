@@ -30,9 +30,18 @@ export async function updateExchange({ id1, id2, exchange1, exchange2 }) {
   return data;
 }
 
-export async function deleteExchange(exchange) {
-  const response = await axiosDashboard.delete(URL + "/" + exchange.id, exchange);
-  return response.data;
+export async function deleteExchange({ exchange1, exchange2 }) {
+  const data = await axios
+    .all([
+      axiosDashboard.delete(`${URL}/${exchange1.id}`, exchange1),
+      axiosDashboard.delete(`${URL}/${exchange2.id}`, exchange2),
+    ])
+    .then(axios.spread((response1, response2) => [response1.data, response2.data]))
+    .catch((err) => {
+      console.error("📛 Error create", err);
+      return err;
+    });
+  return data;
 }
 
 export async function fetchAllAvailableExchanges() {

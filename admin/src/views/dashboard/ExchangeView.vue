@@ -5,7 +5,7 @@
   import { isoToEmoji } from "../../utils/isoToEmoji";
   import { useDisplay } from "vuetify/lib/framework.mjs";
   import { reactive } from "vue";
-  import { createExchange, updateExchange } from "../../services/exchanges";
+  import { createExchange, updateExchange, deleteExchange } from "../../services/exchanges";
   import { alertStore } from "../../store/alert.store";
 
   const { exchanges, isLoading, error } = useExchanges();
@@ -13,41 +13,47 @@
   const { showAlert } = alertStore();
   const { smAndDown } = useDisplay();
 
-  const isModalOpen = ref(null);
+  const isDeleteModalOpen = ref([]);
   const exchangeUpdate = ref(false);
+  const exchange2ForRemove = ref();
 
   const indexPair1 = ref(null);
   const indexPair2 = ref(null);
 
   function getIdPair(index) {
-    const exchangesList = exchangeUpdate.value ? exchanges.value : availableExchanges.value;
+    const exchangesList =
+      exchangeUpdate.value || isDeleteModalOpen.value.length ? exchanges.value : availableExchanges.value;
     return {
       currency_id_1: exchangesList[+index].currency_1.id,
       currency_id_2: exchangesList[+index].currency_2.id,
     };
   }
 
-  const onPairSelected = () => {
-    indexPair1.value = formExchange.exchange_1.split("-")[0];
+  const findOppositePair = (indexOfRemove = null) => {
+    indexPair1.value = formExchange.exchange_1 ? formExchange.exchange_1.split("-")[0] : indexPair1.value;
     const { currency_id_1, currency_id_2 } = getIdPair(indexPair1.value);
-    const exchangesList = exchangeUpdate.value ? exchanges.value : availableExchanges.value;
+    const exchangesList =
+      exchangeUpdate.value || isDeleteModalOpen.value.length ? exchanges.value : availableExchanges.value;
 
     for (let i = 0; i < exchangesList.length; i++) {
       const element = exchangesList[i];
       const id1 = element.currency_1.id;
       const id2 = element.currency_2.id;
+
       if (id2 === currency_id_1 && id1 === currency_id_2) {
         indexPair2.value = i;
-        break;
+        if (indexOfRemove === null) break;
+        if (i !== indexOfRemove) {
+          exchange2ForRemove.value = element;
+          break;
+        }
       }
     }
-    formExchange.exchange_2 = exchangesList[indexPair2.value];
-  };
 
-  function countRate2() {
-    formExchange.exchange_rate_1 = (+formExchange.exchange_rate_1).toFixed(4);
-    formExchange.exchange_rate_2 = (1 / formExchange.exchange_rate_1).toFixed(4);
-  }
+    if (!isDeleteModalOpen.value.length) {
+      formExchange.exchange_2 = exchangesList[indexPair2.value];
+    }
+  };
 
   function formatLabel(exchange) {
     const label = `${isoToEmoji(exchange.currency_1.code)} ${exchange.currency_1.name} → ${
@@ -68,10 +74,37 @@
     exchangeUpdate.value = item;
     formExchange.exchange_1 = `${index} - ${formatLabel(item)}`;
     formExchange.exchange_rate_1 = item.exchange_rate;
-    onPairSelected();
+    findOppositePair(index);
     countRate2();
   }
-  function handleRemoveExchange(item) {}
+
+  function countRate2() {
+    formExchange.exchange_rate_1 = (+formExchange.exchange_rate_1).toFixed(4);
+    formExchange.exchange_rate_2 = (1 / formExchange.exchange_rate_1).toFixed(4);
+  }
+
+  async function handleRemoveExchange(item, index) {
+    indexPair1.value = index;
+    findOppositePair(index);
+    try {
+      const [res1, res2] = await deleteExchange({ exchange1: item, exchange2: exchange2ForRemove.value });
+      exchanges.value = res2.length > res1.length ? res1 : res2;
+
+      await fetchAvailableExchanges();
+      clearForm();
+      indexPair1.value = null;
+      exchange2ForRemove.value = null;
+      showAlert.value({
+        color: "success",
+        title: "Suppresion réussi 👍",
+      });
+    } catch (err) {
+      console.error("📛 Error create exchange", err);
+      showAlert.value({ color: "error", title: "Une erreur est survenue" });
+    } finally {
+      isDeleteModalOpen.value = [];
+    }
+  }
 
   function clearForm() {
     formExchange.exchange_1 = "";
@@ -142,22 +175,33 @@
                 @click="() => addChange(item, index)"
               ></v-btn>
               <!-- MODAL -->
-              <v-btn size="x-small" color="error" variant="outlined" icon="mdi mdi-trash-can-outline">
+              <v-btn :id="item.id" size="x-small" color="error" variant="outlined" icon="mdi mdi-trash-can-outline">
                 <v-icon color="error">mdi mdi-trash-can-outline</v-icon>
-                <v-dialog v-model="isModalOpen" activator="parent" width="auto">
-                  <v-card>
+                <v-dialog v-model="isDeleteModalOpen[index]" activator="parent" width="auto">
+                  <v-card class="px-4 py-4">
+                    <v-card-title>Vous êtes sur le point d'effacer définitivement le change :</v-card-title>
                     <v-card-text>
-                      Vous êtes sur le point d'effacer définitivement la convertion.
-                      <br />
-                      L'action est irreversible
+                      <p class="text-center my-4">
+                        {{ formatLabel(item) }}
+                        <b>ET</b>
+                        son opposé
+                      </p>
+                      <p class="text-center">⚠️ L'action est irreversible</p>
                     </v-card-text>
-                    <v-card-actions>
+                    <v-card-actions class="my-4 mx-4">
                       <v-row>
                         <v-col>
-                          <v-btn color="primary" variant="outlined" block @click="isModalOpen = false">Annuler</v-btn>
+                          <v-btn color="primary" variant="outlined" block @click="isDeleteModalOpen = []">
+                            Annuler
+                          </v-btn>
                         </v-col>
                         <v-col>
-                          <v-btn color="error" variant="outlined" block @click="() => handleRemoveExchange(item)">
+                          <v-btn
+                            color="error"
+                            variant="outlined"
+                            block
+                            @click="() => handleRemoveExchange(item, index)"
+                          >
                             Supprimer
                           </v-btn>
                         </v-col>
@@ -208,7 +252,7 @@
                   return `${index} - ${formatLabel(curr)}`;
                 })
               "
-              @update:modelValue="onPairSelected"
+              @update:modelValue="findOppositePair"
             ></v-select>
           </v-col>
           <v-col>

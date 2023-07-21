@@ -11,7 +11,7 @@
   const { currencies, isLoading, error } = useCurrencies();
   const { showAlert } = alertStore();
 
-  const isModalOpen = ref(false);
+  const isModalOpen = ref([]);
   const isIdUpdate = ref(false);
   const formState = ref();
   const formCurrency = reactive({
@@ -66,7 +66,7 @@
     try {
       const newCurrencies = await deleteCurrency(currency);
       currencies.value = newCurrencies;
-      isModalOpen.value = false;
+      isModalOpen.value = [];
       showAlert.value({
         color: "success",
         title: `La devise ${currency.name} à bien été supprimée`,
@@ -94,7 +94,7 @@
       <v-divider></v-divider>
 
       <v-virtual-scroll :items="currencies" height="320" item-height="48">
-        <template v-slot:default="{ item }">
+        <template v-slot:default="{ item, index }">
           <v-list-item>
             <span class="mr-4">
               {{ isoToEmoji(item.code) }}
@@ -112,17 +112,31 @@
               <!-- MODAL -->
               <v-btn size="x-small" color="error" variant="outlined" icon="mdi mdi-trash-can-outline">
                 <v-icon color="error">mdi mdi-trash-can-outline</v-icon>
-                <v-dialog v-model="isModalOpen" activator="parent" width="auto">
-                  <v-card>
+                <v-dialog v-model="isModalOpen[index]" activator="parent" width="auto">
+                  <v-card class="px-4 py-4">
+                    <v-card-title class="mb-4">
+                      Vous êtes sur le point d'effacer définitivement :
+                      <span class="mx-4">
+                        {{ isoToEmoji(item.code) }}
+                      </span>
+                      {{ item.name }}
+                    </v-card-title>
                     <v-card-text>
-                      Vous êtes sur le point d'effacer définitivement la devise.
-                      <br />
-                      L'action est irreversible
+                      <v-row class="align-center">
+                        <v-col cols="1">⚠️</v-col>
+                        <v-col>
+                          <p>
+                            Si vous avez cette devise utiliser dans des taux de changes,
+                            <br />
+                            ça les supprimera aussi. L'action est irreversible
+                          </p>
+                        </v-col>
+                      </v-row>
                     </v-card-text>
-                    <v-card-actions>
+                    <v-card-actions class="my-4 mx-4">
                       <v-row>
                         <v-col>
-                          <v-btn color="primary" variant="outlined" block @click="isModalOpen = false">Annuler</v-btn>
+                          <v-btn color="primary" variant="outlined" block @click="isModalOpen = []">Annuler</v-btn>
                         </v-col>
                         <v-col>
                           <v-btn color="error" variant="outlined" block @click="() => handleRemoveCurrency(item)">
