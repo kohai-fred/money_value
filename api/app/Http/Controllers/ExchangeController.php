@@ -11,7 +11,7 @@ class ExchangeController extends Controller
 {
     public function index()
     {
-        return Exchange::with('currency1', 'currency2')->get();
+        return Exchange::with('currency_1', 'currency_2')->get();
     }
 
     public function store(ExchangeFormRequest $request)
@@ -20,7 +20,7 @@ class ExchangeController extends Controller
 
         Exchange::create($data);
 
-        return Exchange::with('currency1', 'currency2')->get();
+        return Exchange::with('currency_1', 'currency_2')->get();
     }
 
     public function update(ExchangeFormRequest $request, Exchange $exchange)
@@ -29,14 +29,14 @@ class ExchangeController extends Controller
 
         $exchange->update($data);
 
-        return Exchange::with('currency1', 'currency2')->get();
+        return Exchange::with('currency_1', 'currency_2')->get();
     }
 
     public function destroy(Exchange $exchange)
     {
         $exchange->delete();
 
-        return Exchange::with('currency1', 'currency2')->get();
+        return Exchange::with('currency_1', 'currency_2')->get();
     }
 
     public function generateAllPossiblePairs()
@@ -45,20 +45,20 @@ class ExchangeController extends Controller
         $currencies = Currency::all();
         $possiblePairs = [];
 
-        foreach ($currencies as $currency1) {
-            foreach ($currencies as $currency2) {
-                if ($currency1->id !== $currency2->id) {
-                    $pair = $currency1->id . '-' . $currency2->id;
+        foreach ($currencies as $currency_1) {
+            foreach ($currencies as $currency_2) {
+                if ($currency_1->id !== $currency_2->id) {
+                    $pair = $currency_1->id . '-' . $currency_2->id;
                     $possiblePairs[$pair] = [
                         'currency_1' => [
-                            'id' => $currency1->id,
-                            'name' => $currency1->name,
-                            'code' => $currency1->code,
+                            'id' => $currency_1->id,
+                            'name' => $currency_1->name,
+                            'code' => $currency_1->code,
                         ],
                         'currency_2' => [
-                            'id' => $currency2->id,
-                            'name' => $currency2->name,
-                            'code' => $currency2->code,
+                            'id' => $currency_2->id,
+                            'name' => $currency_2->name,
+                            'code' => $currency_2->code,
                         ],
 
                     ];

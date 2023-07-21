@@ -11,12 +11,12 @@ class Exchange extends Model
 
     protected $fillable = ['currency_id_1', 'currency_id_2', 'exchange_rate'];
 
-    public function currency1()
+    public function currency_1()
     {
         return $this->belongsTo(Currency::class, 'currency_id_1');
     }
 
-    public function currency2()
+    public function currency_2()
     {
         return $this->belongsTo(Currency::class, 'currency_id_2');
     }

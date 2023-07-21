@@ -31,8 +31,11 @@ class ExchangeFormRequest extends FormRequest
                 function ($attribute, $value, $fail) {
                     $currencyId1 = $this->input('currency_id_1');
 
+                    $currentExchangeId = $this->route('exchange') ? $this->route('exchange')->id : null;
+
                     if (Exchange::where('currency_id_1', $currencyId1)
                         ->where('currency_id_2', $value)
+                        ->where('id', '!=', $currentExchangeId)
                         ->exists()
                     ) {
                         $fail('The selected currencies combination already exists.');

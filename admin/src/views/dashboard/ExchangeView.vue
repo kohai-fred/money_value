@@ -5,7 +5,7 @@
   import { isoToEmoji } from "../../utils/isoToEmoji";
   import { useDisplay } from "vuetify/lib/framework.mjs";
   import { reactive } from "vue";
-  import { createExchange } from "../../services/exchanges";
+  import { createExchange, updateExchange } from "../../services/exchanges";
   import { alertStore } from "../../store/alert.store";
 
   const { exchanges, isLoading, error } = useExchanges();
@@ -20,18 +20,20 @@
   const indexPair2 = ref(null);
 
   function getIdPair(index) {
+    const exchangesList = exchangeUpdate.value ? exchanges.value : availableExchanges.value;
     return {
-      currency_id_1: availableExchanges.value[+index].currency_1.id,
-      currency_id_2: availableExchanges.value[+index].currency_2.id,
+      currency_id_1: exchangesList[+index].currency_1.id,
+      currency_id_2: exchangesList[+index].currency_2.id,
     };
   }
 
   const onPairSelected = () => {
     indexPair1.value = formExchange.exchange_1.split("-")[0];
     const { currency_id_1, currency_id_2 } = getIdPair(indexPair1.value);
+    const exchangesList = exchangeUpdate.value ? exchanges.value : availableExchanges.value;
 
-    for (let i = 0; i < availableExchanges.value.length; i++) {
-      const element = availableExchanges.value[i];
+    for (let i = 0; i < exchangesList.length; i++) {
+      const element = exchangesList[i];
       const id1 = element.currency_1.id;
       const id2 = element.currency_2.id;
       if (id2 === currency_id_1 && id1 === currency_id_2) {
@@ -39,12 +41,19 @@
         break;
       }
     }
-    formExchange.exchange_2 = availableExchanges.value[indexPair2.value];
+    formExchange.exchange_2 = exchangesList[indexPair2.value];
   };
 
   function countRate2() {
     formExchange.exchange_rate_1 = (+formExchange.exchange_rate_1).toFixed(4);
     formExchange.exchange_rate_2 = (1 / formExchange.exchange_rate_1).toFixed(4);
+  }
+
+  function formatLabel(exchange) {
+    const label = `${isoToEmoji(exchange.currency_1.code)} ${exchange.currency_1.name} → ${
+      exchange.currency_2.name
+    } ${isoToEmoji(exchange.currency_2.code)}`;
+    return label;
   }
 
   const formState = ref();
@@ -55,7 +64,13 @@
     exchange_rate_2: "",
   });
 
-  function addChange(item) {}
+  function addChange(item, index) {
+    exchangeUpdate.value = item;
+    formExchange.exchange_1 = `${index} - ${formatLabel(item)}`;
+    formExchange.exchange_rate_1 = item.exchange_rate;
+    onPairSelected();
+    countRate2();
+  }
   function handleRemoveExchange(item) {}
 
   function clearForm() {
@@ -66,20 +81,30 @@
   }
 
   async function submitForm() {
-    const request1 = {
+    const exchange1 = {
       ...getIdPair(indexPair1.value),
       exchange_rate: formExchange.exchange_rate_1,
     };
-    const request2 = {
+    const exchange2 = {
       ...getIdPair(indexPair2.value),
       exchange_rate: formExchange.exchange_rate_2,
     };
 
+    const updateRequest = {
+      id1: exchangeUpdate.value?.id,
+      id2: formExchange.exchange_2.id,
+      exchange1,
+      exchange2,
+    };
     try {
-      const [res1, res2] = await createExchange(request1, request2);
-      exchanges.value = res2 > res1 ? res2 : res1;
+      const [res1, res2] = exchangeUpdate.value
+        ? await updateExchange(updateRequest)
+        : await createExchange(exchange1, exchange2);
+      exchanges.value = res2;
+
       await fetchAvailableExchanges();
       clearForm();
+      exchangeUpdate.value = null;
       showAlert.value({
         color: "success",
         title: `Les conversions ont bien été ${exchangeUpdate.value ? "modifées" : "ajoutées"}`,
@@ -96,30 +121,16 @@
 
   <div align-items="center" class="d-flex align-top justify-space-around flex-wrap gap-5 mt-16" width="100%">
     <v-card v-if="exchanges" class="mx-3 my-3" max-width="750" min-width="250px" width="100%">
-      <v-card-title>Les devises existantes</v-card-title>
+      <v-card-title>Les taux existants</v-card-title>
 
       <v-divider></v-divider>
 
       <v-virtual-scroll :items="exchanges" height="320" item-height="48">
-        <template v-slot:default="{ item }">
+        <template v-slot:default="{ item, index }">
           <v-list-item>
-            <!-- <template v-slot:prepend>
-            </template> -->
-            <span class="d-flex align-center flex-wrap">
-              <span class="mr-2">
-                {{ isoToEmoji(item.currency1.code) }}
-              </span>
-              {{ item.currency1.name }}
-              <span class="mdi mdi-arrow-right-thin mx-2"></span>
-              <div>
-                {{ item.currency2.name }}
-                <span class="ml-2">{{ isoToEmoji(item.currency2.code) }}</span>
-              </div>
-              <div>
-                <span class="mdi mdi-arrow-right-thin mx-2"></span>
-                {{ item.exchange_rate }}
-              </div>
-            </span>
+            {{ formatLabel(item) }}
+            <span class="mdi mdi-arrow-right-thin mx-2"></span>
+            {{ item.exchange_rate }}
             <v-divider v-if="smAndDown" />
             <template v-slot:append>
               <v-btn
@@ -128,7 +139,7 @@
                 variant="outlined"
                 icon="mdi mdi-pencil-outline"
                 class="mr-2"
-                @click="() => addChange(item)"
+                @click="() => addChange(item, index)"
               ></v-btn>
               <!-- MODAL -->
               <v-btn size="x-small" color="error" variant="outlined" icon="mdi mdi-trash-can-outline">
@@ -173,8 +184,8 @@
         <v-card-title>
           {{
             exchangeUpdate
-              ? `Modifier - ${exchangeUpdate.currency1.name} & ${exchangeUpdate.currency2.name}`
-              : "Ajouter une nouvelle devise"
+              ? `Modifier - ${exchangeUpdate.currency_1.name} & ${exchangeUpdate.currency_2.name}`
+              : "Ajouter un nouveau taux de change"
           }}
         </v-card-title>
         <v-divider class="mb-4"></v-divider>
@@ -194,9 +205,7 @@
               v-model="formExchange.exchange_1"
               :items="
                 availableExchanges.map((curr, index) => {
-                  return `${index} - ${isoToEmoji(curr.currency_1.code)} ${curr.currency_1.name} → ${
-                    curr.currency_2.name
-                  } ${isoToEmoji(curr.currency_2.code)}`;
+                  return `${index} - ${formatLabel(curr)}`;
                 })
               "
               @update:modelValue="onPairSelected"
@@ -215,18 +224,7 @@
         </v-row>
         <v-row>
           <v-col>
-            <v-text-field
-              :label="
-                formExchange.exchange_2
-                  ? `${isoToEmoji(formExchange.exchange_2.currency_1.code)} ${
-                      formExchange.exchange_2.currency_1.name
-                    } → ${formExchange.exchange_2.currency_2.name} ${isoToEmoji(
-                      formExchange.exchange_2.currency_2.code
-                    )}`
-                  : ''
-              "
-              disabled
-            />
+            <v-text-field :label="formExchange.exchange_2 ? formatLabel(formExchange.exchange_2) : ''" disabled />
           </v-col>
           <v-col>
             <v-text-field
