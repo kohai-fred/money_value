@@ -7,6 +7,7 @@
   import { computed } from "vue";
   import Modal from "../../components/Modal.vue";
   import TitlePage from "../../components/TitlePage.vue";
+  import { isoToEmoji } from "../../utils/isoToEmoji";
   const { currencies, isLoading, error } = useCurrencies();
   const { showAlert } = alertStore();
 
@@ -95,9 +96,9 @@
       <v-virtual-scroll :items="currencies" height="320" item-height="48">
         <template v-slot:default="{ item }">
           <v-list-item>
-            <template v-slot:prepend>
-              <v-icon color="green-darken-1">mdi mdi-cash</v-icon>
-            </template>
+            <span class="mr-4">
+              {{ isoToEmoji(item.code) }}
+            </span>
             {{ item.name }}
             <template v-slot:append>
               <v-btn
@@ -178,8 +179,8 @@
               block
               @click="clearForm"
               color="red"
-              :disabled="!formCurrency.code || !formCurrency.name"
-              :variant="!formCurrency.code || !formCurrency.name ? 'text' : 'flat'"
+              :disabled="!formCurrency.code && !formCurrency.name"
+              :variant="!formCurrency.code && !formCurrency.name ? 'outlined' : 'flat'"
             >
               Annuler
             </v-btn>
