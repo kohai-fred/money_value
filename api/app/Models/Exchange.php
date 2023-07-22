@@ -9,7 +9,7 @@ class Exchange extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['currency_id_1', 'currency_id_2', 'exchange_rate'];
+    protected $fillable = ['currency_id_1', 'currency_id_2', 'exchange_rate', 'request_count'];
 
     public function currency_1()
     {

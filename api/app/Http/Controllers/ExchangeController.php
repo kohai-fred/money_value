@@ -102,10 +102,19 @@ class ExchangeController extends Controller
             return response()->json(['message' => 'Taux de change non trouvé'], 404);
         }
 
+        // Augmenter le compteur de requêtes pour cette paire
+        $exchange->increment('request_count');
+
         // Effectuez le calcul en multipliant le montant par le taux de change
         $calculatedAmount = number_format($amount * $exchange->exchange_rate, 4);
 
         // Retournez le montant calculé
-        return response()->json(['calculated_amount' => $calculatedAmount]);
+        // return response()->json(['calculated_amount' => $calculatedAmount]);
+        return response()->json([
+            'pair' => "{$codeIso1}/{$codeIso2}",
+            'exchange_rate' => $exchange->exchange_rate,
+            'amount' => $amount,
+            'calculated_amount' => $calculatedAmount,
+        ]);
     }
 }

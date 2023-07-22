@@ -164,6 +164,7 @@
             {{ formatLabel(item) }}
             <span class="mdi mdi-arrow-right-thin mx-2"></span>
             {{ item.exchange_rate }}
+            <span class="mx-2 text-caption">(call x {{ item.request_count }})</span>
             <v-divider v-if="smAndDown" />
             <template v-slot:append>
               <v-btn

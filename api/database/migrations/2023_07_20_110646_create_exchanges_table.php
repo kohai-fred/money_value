@@ -16,6 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('currency_id_1');
             $table->unsignedBigInteger('currency_id_2');
             $table->decimal('exchange_rate', 10, 4);
+            $table->unsignedBigInteger('request_count')->default(0);
             $table->timestamps();
 
             // Déclaration des clés étrangères
