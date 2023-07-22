@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CurrencyController;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,6 +15,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Route::prefix("admin")->name("admin.")->group(function(){
-//     // Route::resource('');
-// });
+Route::get('/', function () {
+    return Redirect::to('/api/server');
+});

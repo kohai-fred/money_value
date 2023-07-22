@@ -17,6 +17,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get('server', function () {
+    return response()->json(['message' => 'Le serveur est en attente de vos requetes']);
+});
+
 Route::get('currencies', [CurrencyController::class, 'index'])->name("currencies");
 
 Route::post('login', [AuthController::class, 'authenticate'])->name('login');
