@@ -11,6 +11,8 @@
   const BASE_URL = import.meta.env.VITE_BASE_API_URL;
   const code = ref();
 
+  const serverResponse = { message: "Le serveur est en attente de vos requetes" };
+
   const exchangeResponse = {
     success: { pair: "jpy/eur", exchange_rate: "0.0080", amount: "200", calculated_amount: "1.6000" },
     error: {
@@ -75,6 +77,16 @@
         {{ BASE_URL }}):
       </p>
       <p class="font-italic py-1">
+        <span class="font-weight-medium">Savoir si le server répond :</span>
+        <br />
+        <span class="font-weight-bold">/server</span>
+        <br />
+        <span class="text-caption">success :</span>
+      </p>
+      <div class="border rounded my-2">
+        <pre v-highlightjs><code class="json">{{ serverResponse }}</code></pre>
+      </div>
+      <p class="font-italic py-1">
         <span class="font-weight-medium">Convertir 2 devises avec leur code ISO :</span>
         <br />
         <span class="font-weight-bold">/&lt;codeiso1&gt;/&lt;codeiso2&gt;/&lt;montant&gt;</span>
@@ -94,6 +106,8 @@
         <span class="font-weight-medium">Avoir la liste des codes iso :</span>
         <br />
         <span class="font-weight-bold">/pairs</span>
+        <br />
+        <span class="text-caption">success :</span>
       </p>
       <div>
         <pre v-highlightjs><code class="json">{{ pairsResponse }}</code></pre>
