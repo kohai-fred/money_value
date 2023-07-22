@@ -79,7 +79,7 @@
       <p class="font-italic py-1">
         <span class="font-weight-medium">Savoir si le server répond :</span>
         <br />
-        <span class="font-weight-bold">/server</span>
+        <span class="font-weight-bold">GET: /ping</span>
         <br />
         <span class="text-caption">success :</span>
       </p>
@@ -89,7 +89,7 @@
       <p class="font-italic py-1">
         <span class="font-weight-medium">Convertir 2 devises avec leur code ISO :</span>
         <br />
-        <span class="font-weight-bold">/&lt;codeiso1&gt;/&lt;codeiso2&gt;/&lt;montant&gt;</span>
+        <span class="font-weight-bold">GET: /&lt;codeiso1&gt;/&lt;codeiso2&gt;/&lt;montant&gt;</span>
         <br />
         ex: /jpy/eur/200
         <br />
@@ -105,7 +105,7 @@
       <p class="font-italic">
         <span class="font-weight-medium">Avoir la liste des codes iso :</span>
         <br />
-        <span class="font-weight-bold">/pairs</span>
+        <span class="font-weight-bold">GET: /pairs</span>
         <br />
         <span class="text-caption">success :</span>
       </p>

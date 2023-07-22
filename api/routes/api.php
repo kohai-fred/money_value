@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('server', function () {
+Route::get('ping', function () {
     return response()->json(['message' => 'Le serveur est en attente de vos requetes']);
 });
 
