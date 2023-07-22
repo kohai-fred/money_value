@@ -8,6 +8,8 @@ import App from "./App.vue";
 import { createApp } from "vue";
 import { createVuetify } from "vuetify";
 import router from "./router";
+import VueHighlightJS from "vue3-highlightjs";
+import "highlight.js/styles/night-owl.css";
 
 const app = createApp(App);
 
@@ -19,6 +21,8 @@ app.use(
     theme: { defaultTheme: "dark" },
   })
 );
+
+app.use(VueHighlightJS);
 
 app.use(router);
 

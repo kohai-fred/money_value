@@ -87,4 +87,25 @@ class ExchangeController extends Controller
 
         return array_values($availablePairs);
     }
+
+    public function calculateAmount($codeIso1, $codeIso2, $amount)
+    {
+        // Recherchez le taux de change dans la table Exchange en fonction des devises données
+        $exchange = Exchange::whereHas('currency_1', function ($query) use ($codeIso1) {
+            $query->where('code', $codeIso1);
+        })->whereHas('currency_2', function ($query) use ($codeIso2) {
+            $query->where('code', $codeIso2);
+        })->first();
+
+        if (!$exchange) {
+            // Si le taux de change n'est pas trouvé, retournez un message d'erreur approprié
+            return response()->json(['message' => 'Taux de change non trouvé'], 404);
+        }
+
+        // Effectuez le calcul en multipliant le montant par le taux de change
+        $calculatedAmount = number_format($amount * $exchange->exchange_rate, 4);
+
+        // Retournez le montant calculé
+        return response()->json(['calculated_amount' => $calculatedAmount]);
+    }
 }

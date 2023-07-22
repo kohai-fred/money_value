@@ -1,6 +1,7 @@
 import axios from "axios";
 import axiosDashboard from "./axiosDashboard";
 
+const BASE_URL = import.meta.env.VITE_BASE_API_URL;
 const URL = "/exchanges";
 
 export async function fetchAllExchanges() {
@@ -47,4 +48,20 @@ export async function deleteExchange({ exchange1, exchange2 }) {
 export async function fetchAllAvailableExchanges() {
   const response = await axiosDashboard.get(`${URL}/available_pairs`);
   return response.data;
+}
+
+export async function convertCurrencies({ codeIso1, codeIso2, amount }) {
+  let result = null;
+  let error = null;
+  await axios
+    .get(`${BASE_URL}/${codeIso1}/${codeIso2}/${amount}`)
+    .then((res) => {
+      const { data } = res;
+      result = data;
+    })
+    .catch((err) => {
+      error = err.response.data.message ?? err.message ?? err;
+    });
+
+  return { result, error };
 }
