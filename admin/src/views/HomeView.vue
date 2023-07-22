@@ -12,7 +12,7 @@
   const code = ref();
 
   const exchangeResponse = {
-    success: { calculated_amount: 0.667 },
+    success: { pair: "jpy/eur", exchange_rate: "0.0080", amount: "200", calculated_amount: "1.6000" },
     error: {
       message: "Taux de change non trouvé",
     },
@@ -89,7 +89,7 @@
         <br />
         <span class="font-weight-bold">/&lt;codeiso1&gt;/&lt;codeiso2&gt;/&lt;montant&gt;</span>
         <br />
-        ex: /jpy/eur/1
+        ex: /jpy/eur/200
         <br />
         <span class="text-caption">success :</span>
       </p>
