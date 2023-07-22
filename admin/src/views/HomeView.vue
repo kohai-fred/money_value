@@ -19,25 +19,15 @@
   };
   const pairsResponse = [
     {
-      id: 47,
-      currency_id_1: 13,
-      currency_id_2: 11,
-      exchange_rate: "0.6667",
-      created_at: "2023-07-21T10:54:13.000000Z",
-      updated_at: "2023-07-21T10:54:13.000000Z",
       currency_1: {
-        id: 13,
-        code: "JPY",
-        name: "yen",
-        created_at: "2023-07-21T10:44:50.000000Z",
-        updated_at: "2023-07-21T10:44:50.000000Z",
+        id: 1,
+        name: "euro",
+        code: "EUR",
       },
       currency_2: {
-        id: 11,
-        code: "EUR",
-        name: "euro",
-        created_at: "2023-07-21T10:09:25.000000Z",
-        updated_at: "2023-07-21T10:09:25.000000Z",
+        id: 8,
+        name: "livre sterling",
+        code: "GBP",
       },
     },
   ];

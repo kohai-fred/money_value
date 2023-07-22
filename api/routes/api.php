@@ -21,7 +21,7 @@ Route::get('currencies', [CurrencyController::class, 'index'])->name("currencies
 
 Route::post('login', [AuthController::class, 'authenticate'])->name('login');
 
-Route::get('pairs', [ExchangeController::class, 'index'])->name("pairs");
+Route::get('pairs', [ExchangeController::class, 'filterCompletedPairs'])->name("pairs");
 
 Route::prefix('dashboard')->middleware('auth:sanctum')->name('dashboard.')->group(function () {
     Route::resource('currencies', CurrencyController::class)->except(['show', 'create', 'edit']);
