@@ -18,7 +18,7 @@ class CurrencySeeder extends Seeder
             ['name' => 'dollar canadien', 'code' => 'CAD'],
             ['name' => 'dong', 'code' => 'VND'],
             ['name' => 'florin', 'code' => 'HUF'],
-            ['name' => 'franc cfa', 'code' => 'XAF'],
+            ['name' => 'dollar hong kong', 'code' => 'HKD'],
             ['name' => 'yen', 'code' => 'JPY'],
             ['name' => 'livre sterling', 'code' => 'GBP'],
             ['name' => 'baht', 'code' => 'THB'],
