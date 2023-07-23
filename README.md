@@ -19,6 +19,8 @@ git clone https://github.com/kohai-fred/money_value.git
 cd money_value
 ```
 
+---
+
 ### <u>Backend (API) :</u>
 
 La partie backend du projet MoneyValue est une API REST qui permet de convertir des devises en d'autres devises et
