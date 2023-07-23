@@ -109,6 +109,8 @@ Username: sail
 Password: password
 ```
 
+---
+
 ### <u>Frontend (Admin) :</u>
 
 La partie frontend du projet MoneyValue est une interface d'administration qui permet de gérer les devises mises à
@@ -143,10 +145,3 @@ npm run dev
 ```
 https://127.0.0.1:5173
 ```
-
-### Contact
-
-Si vous rencontrez des problèmes ou si vous avez des questions concernant le projet MoneyValue, n'hésitez pas à
-contacter notre équipe de support à l'adresse support@moneyvalue.com.
-
-Nous vous souhaitons une excellente expérience de développement avec MoneyValue !
